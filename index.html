@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protocolo Cierre Cero | Stack Labs</title>
+    <meta name="description" content="Tus cierres mensuales en 3 clics. Sin pendientes, sin multas, sin quedarte hasta las 11 PM. Software contable por Stack Labs.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ============ RESET & VARIABLES ============ */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --black: #0a0a0a;
+            --black-soft: #141414;
+            --black-card: #1a1a1a;
+            --gold: #c9a84c;
+            --gold-light: #e5c76b;
+            --gold-dark: #a8872e;
+            --cream: #f5f0e8;
+            --cream-soft: #d4cfc4;
+            --white: #ffffff;
+            --font-serif: 'Playfair Display', Georgia, serif;
+            --font-sans: 'Inter', -apple-system, sans-serif;
+        }
+
+        html { scroll-behavior: smooth; }
+        
+        body {
+            font-family: var(--font-sans);
+            background: var(--black);
+            color: var(--cream);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* ============ HEADER ============ */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(201, 168, 76, 0.15);
+            z-index: 1000;
+            padding: 1rem 0;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: var(--font-serif);
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--cream);
+            text-decoration: none;
+            letter-spacing: 0.5px;
+        }
+
+        .logo span {
+            color: var(--gold);
+            font-weight: 900;
+        }
+
+        nav {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        nav a {
+            color: var(--cream-soft);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.3s;
+            letter-spacing: 0.5px;
+        }
+
+        nav a:hover { color: var(--gold); }
+
+        .btn-header {
+            background: var(--gold);
+            color: var(--black) !important;
+            padding: 0.6rem 1.5rem;
+            border-radius: 4px;
+            font-weight: 700 !important;
+            transition: all 0.3s;
+        }
+
+        .btn-header:hover {
+            background: var(--gold-light);
+            transform: translateY(-2px);
+        }
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--gold);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* ============ HERO ============ */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 8rem 0 4rem;
+            position: relative;
+            background: 
+                radial-gradient(ellipse at top right, rgba(201, 168, 76, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at bottom left, rgba(201, 168, 76, 0.05) 0%, transparent 50%);
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(rgba(201, 168, 76, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(201, 168, 76, 0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            background: rgba(201, 168, 76, 0.1);
+            border: 1px solid rgba(201, 168, 76, 0.3);
+            border-radius: 50px;
+            font-size: 0.85rem;
+            color: var(--gold);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+            font-weight: 600;
+        }
+
+        .hero h1 {
+            font-family: var(--font-serif);
+            font-size: clamp(2.5rem, 6vw, 5rem);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            color: var(--cream);
+        }
+
+        .hero h1 .gold {
+            color: var(--gold);
+            display: block;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1.1rem, 2vw, 1.4rem);
+            color: var(--cream-soft);
+            margin-bottom: 3rem;
+            font-weight: 300;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 4rem;
+        }
+
+        .btn-primary {
+            background: var(--gold);
+            color: var(--black);
+            padding: 1rem 2.5rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: all 0.3s;
+            border: 2px solid var(--gold);
+            display: inline-block;
+        }
+
+        .btn-primary:hover {
+            background: var(--gold-light);
+            border-color: var(--gold-light);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(201, 168, 76, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--cream);
+            padding: 1rem 2.5rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border: 2px solid var(--cream-soft);
+            transition: all 0.3s;
+            display: inline-block;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            max-width: 700px;
+            margin: 0 auto;
+            padding-top: 3rem;
+            border-top: 1px solid rgba(201, 168, 76, 0.2);
+        }
+
+        .stat-number {
+            font-family: var(--font-serif);
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--gold);
+            display: block;
+        }
+
+        .stat-label {
+            color: var(--cream-soft);
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* ============ SECTIONS ============ */
+        section {
+            padding: 6rem 0;
+        }
+
+        .section-label {
+            display: block;
+            color: var(--gold);
+            font-size: 0.85rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .section-title {
+            font-family: var(--font-serif);
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--cream);
+            line-height: 1.2;
+        }
+
+        .section-subtitle {
+            color: var(--cream-soft);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin-bottom: 4rem;
+        }
+
+        /* ============ PROBLEMA ============ */
+        .problema {
+            background: var(--black-soft);
+            border-top: 1px solid rgba(201, 168, 76, 0.1);
+            border-bottom: 1px solid rgba(201, 168, 76, 0.1);
+        }
+
+        .pain-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .pain-card {
+            background: var(--black-card);
+            padding: 2.5rem;
+            border-radius: 8px;
+            border: 1px solid rgba(201, 168, 76, 0.1);
+            transition: all 0.4s;
+            position: relative;
+        }
+
+        .pain-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background: var(--gold);
+        }
+
+        .pain-card:hover {
+            border-color: var(--gold);
+            transform: translateY(-5px);
+        }
+
+        .pain-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .pain-card h3 {
+            font-family: var(--font-serif);
+            font-size: 1.4rem;
+            color: var(--cream);
+            margin-bottom: 1rem;
+        }
+
+        .pain-card p {
+            color: var(--cream-soft);
+            line-height: 1.7;
+        }
+
+        /* ============ SOLUCIÓN ============ */
+        .solucion {
+            background: var(--black);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, var(--black-card) 0%, var(--black-soft) 100%);
+            padding: 3rem 2.5rem;
+            border-radius: 8px;
+            border: 1px solid rgba(201, 168, 76, 0.15);
+            position: relative;
+            transition: all 0.4s;
+        }
+
+        .feature-card:hover {
+            border-color: var(--gold);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .feature-number {
+            font-family: var(--font-serif);
+            font-size: 4rem;
+            font-weight: 900;
+            color: var(--gold);
+            opacity: 0.3;
+            line-height: 1;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            font-family: var(--font-serif);
+            font-size: 1.5rem;
+            color: var(--cream);
+            margin-bottom: 1rem;
+        }
+
+        .feature-card p {
+            color: var(--cream-soft);
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-card p strong {
+            color: var(--gold);
+        }
+
+        .feature-tag {
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            background: rgba(201, 168, 76, 0.1);
+            border: 1px solid rgba(201, 168, 76, 0.3);
+            border-radius: 50px;
+            font-size: 0.75rem;
+            color: var(--gold);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        /* ============ PRECIO ============ */
+        .precio {
+            background: var(--black-soft);
+            border-top: 1px solid rgba(201, 168, 76, 0.1);
+        }
+
+        .pricing-wrapper {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .pricing-card {
+            background: var(--black-card);
+            padding: 3.5rem;
+            border-radius: 12px;
+            border: 2px solid var(--gold);
+            text-align: center;
+            position: relative;
+        }
+
+        .pricing-badge {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--gold);
+            color: var(--black);
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .pricing-card h3 {
+            font-family: var(--font-serif);
+            font-size: 1.8rem;
+            color: var(--cream);
+            margin-bottom: 1rem;
+        }
+
+        .pricing-amount {
+            margin: 2rem 0;
+        }
+
+        .currency {
+            font-size: 1.5rem;
+            color: var(--gold);
+            vertical-align: top;
+            font-weight: 700;
+        }
+
+        .amount {
+            font-family: var(--font-serif);
+            font-size: 5rem;
+            font-weight: 900;
+            color: var(--gold);
+            line-height: 1;
+        }
+
+        .period {
+            color: var(--cream-soft);
+            font-size: 1rem;
+            margin-left: 0.5rem;
+        }
+
+        .pricing-note {
+            color: var(--cream-soft);
+            font-size: 0.9rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .pricing-features {
+            list-style: none;
+            text-align: left;
+            margin-bottom: 2.5rem;
+        }
+
+        .pricing-features li {
+            padding: 0.8rem 0;
+            border-bottom: 1px solid rgba(201, 168, 76, 0.1);
+            color: var(--cream);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .pricing-features li::before {
+            content: '✓';
+            color: var(--gold);
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .pricing-features li:last-child {
+            border-bottom: none;
+        }
+
+        /* ============ CONTACTO ============ */
+        .contacto {
+            background: var(--black);
+            border-top: 1px solid rgba(201, 168, 76, 0.1);
+        }
+
+        .contact-wrapper {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .contact-form {
+            margin-top: 3rem;
+            text-align: left;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem 1.2rem;
+            background: var(--black-card);
+            border: 1px solid rgba(201, 168, 76, 0.2);
+            border-radius: 4px;
+            color: var(--cream);
+            font-family: var(--font-sans);
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--gold);
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: var(--cream-soft);
+            opacity: 0.5;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .btn-submit {
+            width: 100%;
+            background: var(--gold);
+            color: var(--black);
+            padding: 1.2rem;
+            border: none;
+            border-radius: 4px;
+            font-family: var(--font-sans);
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-submit:hover {
+            background: var(--gold-light);
+            transform: translateY(-2px);
+        }
+
+        .contact-alt {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(201, 168, 76, 0.1);
+        }
+
+        .contact-alt p {
+            color: var(--cream-soft);
+            margin-bottom: 1rem;
+        }
+
+        .contact-link {
+            display: block;
+            color: var(--gold);
+            text-decoration: none;
+            padding: 0.5rem 0;
+            transition: color 0.3s;
+        }
+
+        .contact-link:hover {
+            color: var(--gold-light);
+        }
+
+        /* ============ FOOTER ============ */
+        footer {
+            background: var(--black-soft);
+            padding: 4rem 0 2rem;
+            border-top: 1px solid rgba(201, 168, 76, 0.2);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-brand .logo {
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        .footer-tagline {
+            color: var(--cream-soft);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            max-width: 300px;
+        }
+
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .footer-links a {
+            color: var(--cream-soft);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--gold);
+        }
+
+        .footer-bottom {
+            padding-top: 2rem;
+            border-top: 1px solid rgba(201, 168, 76, 0.1);
+            text-align: center;
+            color: var(--cream-soft);
+            font-size: 0.85rem;
+        }
+
+        .footer-bottom p {
+            margin: 0.5rem 0;
+        }
+
+        /* ============ ANIMACIONES ============ */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s, transform 0.8s;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ============ RESPONSIVE ============ */
+        @media (max-width: 768px) {
+            nav { display: none; }
+            nav.active {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: var(--black);
+                padding: 2rem;
+                border-bottom: 1px solid rgba(201, 168, 76, 0.2);
+            }
+            .menu-toggle { display: block; }
+            
+            .hero-stats {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .pricing-card {
+                padding: 2.5rem 1.5rem;
+            }
+            
+            .amount {
+                font-size: 4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <div class="container header-content">
+            <a href="#" class="logo">Stack <span>Labs</span></a>
+            <button class="menu-toggle" id="menuToggle">☰</button>
+            <nav id="mainNav">
+                <a href="#problema">El Problema</a>
+                <a href="#solucion">La Solución</a>
+                <a href="#precio">Precio</a>
+                <a href="#contacto" class="btn-header">Empezar</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="container hero-content">
+            <span class="hero-badge">Software que resuelve</span>
+            <h1>
+                Protocolo
+                <span class="gold">Cierre Cero</span>
+            </h1>
+            <p class="hero-subtitle">
+                Tus cierres mensuales en 3 clics. Sin pendientes, sin multas, sin quedarte hasta las 11 PM.
+            </p>
+            <div class="hero-cta">
+                <a href="#contacto" class="btn-primary">Activar Ahora — $299/mes</a>
+                <a href="#solucion" class="btn-secondary">Ver Cómo Funciona</a>
+            </div>
+            <div class="hero-stats">
+                <div>
+                    <span class="stat-number">10+</span>
+                    <span class="stat-label">Horas ahorradas al mes</span>
+                </div>
+                <div>
+                    <span class="stat-number">100%</span>
+                    <span class="stat-label">Sin Inteligencia Artificial</span>
+                </div>
+                <div>
+                    <span class="stat-number">0</span>
+                    <span class="stat-label">Pendientes olvidados</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROBLEMA -->
+    <section id="problema" class="problema">
+        <div class="container">
+            <span class="section-label">El Dolor Real</span>
+            <h2 class="section-title">¿Te suena familiar?</h2>
+            <p class="section-subtitle">Si eres contador independiente, esto te pasa todos los meses.</p>
+            
+            <div class="pain-grid">
+                <div class="pain-card fade-in">
+                    <div class="pain-icon">📱</div>
+                    <h3>El Caos del WhatsApp</h3>
+                    <p>Tu cliente te manda 50 fotos de tickets, facturas sueltas y audios a las 10 PM. Tú pierdes 2 horas solo organizando archivos.</p>
+                </div>
+                <div class="pain-card fade-in">
+                    <div class="pain-icon">⏰</div>
+                    <h3>El Miedo al Olvido</h3>
+                    <p>¿Se te pasó una fecha de presentación? El pánico de que el SAT multe a tu cliente (y te culpe a ti) es real.</p>
+                </div>
+                <div class="pain-card fade-in">
+                    <div class="pain-icon">💸</div>
+                    <h3>Baja Rentabilidad</h3>
+                    <p>Cobras poco porque pierdes horas capturando manualmente las mismas pólizas una y otra vez en Excel.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SOLUCIÓN -->
+    <section id="solucion" class="solucion">
+        <div class="container">
+            <span class="section-label">La Solución</span>
+            <h2 class="section-title">3 Pasos al Cierre Cero</h2>
+            <p class="section-subtitle">Sin magia. Sin IA. Solo automatización pura que funciona.</p>
+            
+            <div class="features-grid">
+                <div class="feature-card fade-in">
+                    <div class="feature-number">01</div>
+                    <h3>El Ingestor de Evidencia</h3>
+                    <p>Tus clientes suben sus facturas a un link único. El sistema las renombra automáticamente con fecha y RFC, y las guarda en la carpeta del mes. <strong>Adiós al caos de WhatsApp.</strong></p>
+                    <span class="feature-tag">Automatización Pura</span>
+                </div>
+                <div class="feature-card fade-in">
+                    <div class="feature-number">02</div>
+                    <h3>Generador de Pólizas "Plantilla Maestra"</h3>
+                    <p>Configuras tus cuentas contables una vez. Luego, con un clic en "Gasolina", "Nómina" o "Honorarios", el sistema crea la póliza completa con IVA y cuentas predefinidas. <strong>Cero captura manual.</strong></p>
+                    <span class="feature-tag">Velocidad Extrema</span>
+                </div>
+                <div class="feature-card fade-in">
+                    <div class="feature-number">03</div>
+                    <h3>Semáforo Fiscal de Doble Aviso</h3>
+                    <p>Calendario visual que cambia de color según la urgencia. Y lo mejor: <strong>el sistema le manda el recordatorio a tu cliente por WhatsApp o correo</strong>. Tú dejas de ser el "cobrador".</p>
+                    <span class="feature-tag">Cero Estrés</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRECIO -->
+    <section id="precio" class="precio">
+        <div class="container">
+            <div class="pricing-wrapper">
+                <div class="pricing-card fade-in">
+                    <span class="pricing-badge">Plan Fundador</span>
+                    <h3>Protocolo Cierre Cero</h3>
+                    <div class="pricing-amount">
+                        <span class="currency">$</span>
+                        <span class="amount">299</span>
+                        <span class="period">MXN/mes</span>
+                    </div>
+                    <p class="pricing-note">O $2,999 MXN anual (ahorra 2 meses)</p>
+                    <ul class="pricing-features">
+                        <li>Ingestor de Evidencia (link de subida ilimitado)</li>
+                        <li>Generador de Pólizas con plantillas maestras</li>
+                        <li>Semáforo Fiscal con avisos automáticos a clientes</li>
+                        <li>Soporte por WhatsApp</li>
+                        <li>Sin contratos, cancela cuando quieras</li>
+                        <li>100% en la nube, accede desde cualquier dispositivo</li>
+                    </ul>
+                    <a href="#contacto" class="btn-primary" style="width: 100%; text-align: center;">Activar Ahora</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACTO -->
+    <section id="contacto" class="contacto">
+        <div class="container">
+            <div class="contact-wrapper">
+                <span class="section-label">Empieza Hoy</span>
+                <h2 class="section-title">¿Listo para el Cierre Cero?</h2>
+                <p class="section-subtitle" style="margin-left: auto; margin-right: auto;">
+                    Deja de ser el "perseguir de facturas" y el "capturista de datos". Empieza hoy mismo.
+                </p>
+                
+                <form class="contact-form" id="contactForm">
+                    <div class="form-group">
+                        <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" id="email" name="email" placeholder="Tu correo electrónico" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="tel" id="telefono" name="telefono" placeholder="Tu WhatsApp (opcional)">
+                    </div>
+                    <div class="form-group">
+                        <textarea id="mensaje" name="mensaje" placeholder="¿Cuántos clientes manejas actualmente?" rows="4"></textarea>
+                    </div>
+                    <button type="submit" class="btn-submit">Quiero Activar Protocolo Cierre Cero</button>
+                </form>
+                
+                <div class="contact-alt">
+                    <p>O contáctanos directamente:</p>
+                    <a href="mailto:hola@stacklabs.dev" class="contact-link">📧 hola@stacklabs.dev</a>
+                    <a href="https://wa.me/521234567890" class="contact-link">💬 WhatsApp: +52 123 456 7890</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <a href="#" class="logo">Stack <span>Labs</span></a>
+                    <p class="footer-tagline">Software que resuelve. Ingeniería que trasciende.</p>
+                </div>
+                <div class="footer-links">
+                    <a href="#problema">El Problema</a>
+                    <a href="#solucion">La Solución</a>
+                    <a href="#precio">Precio</a>
+                    <a href="#contacto">Contacto</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Stack Labs. Todos los derechos reservados.</p>
+                <p>Protocolo Cierre Cero es un producto de Stack Labs.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Menú móvil
+        const menuToggle = document.getElementById('menuToggle');
+        const mainNav = document.getElementById('mainNav');
+        
+        menuToggle.addEventListener('click', () => {
+            mainNav.classList.toggle('active');
+        });
+
+        // Cerrar menú al hacer clic en un enlace
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', () => {
+                mainNav.classList.remove('active');
+            });
+        });
+
+        // Animaciones al hacer scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Formulario de contacto
+        const contactForm = document.getElementById('contactForm');
+        contactForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const nombre = document.getElementById('nombre').value;
+            const email = document.getElementById('email').value;
+            const telefono = document.getElementById('telefono').value;
+            const mensaje = document.getElementById('mensaje').value;
+            
+            // Aquí puedes integrar con tu backend, Formspree, EmailJS, etc.
+            alert(`¡Gracias ${nombre}! Hemos recibido tu solicitud. Te contactaremos en menos de 24 horas al correo ${email}.`);
+            
+            contactForm.reset();
+        });
+
+        // Smooth scroll para enlaces internos
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Efecto de header al hacer scroll
+        let lastScroll = 0;
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            const currentScroll = window.pageYOffset;
+            
+            if (currentScroll > 100) {
+                header.style.boxShadow = '0 5px 30px rgba(0, 0, 0, 0.5)';
+            } else {
+                header.style.boxShadow = 'none';
+            }
+            
+            lastScroll = currentScroll;
+        });
+    </script>
+</body>
+</html>
